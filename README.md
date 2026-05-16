@@ -42,23 +42,6 @@ sudo apt-get update
 sudo apt-get install xdotool x11-xserver-utils
 ```
 
-### 5. Run Examples
-
-- CLI cursor move, click, and scroll:
-```bash
-python -m src.examples.cursor_control
-```
-
-- Linux head-controlled cursor (webcam required):
-```bash
-python -m src.examples.head_cursor
-```
-
-### 5. Run the Main Application
-```bash
-python main.py
-```
-
 ## Windows Quickstart
 
 1. Install Python 3.11 or 3.12 (the deps `dlib`, `mediapipe`, `panda3d` lack
@@ -88,8 +71,3 @@ This drops three shortcuts on your Desktop:
 | **EyeCursor App** | `launch.bat` | `assets\eyecursor.ico` |
 | **EyeCursor TestLab** | `launch_criteria.bat` | `assets\testlab.ico` |
 | **Horsin' Around** | `launch_game.bat` | `assets\horsin_around.ico` |
-
-`eyecursor.ico` is repackaged from the existing PNGs by
-`scripts\png_to_ico.py`. The TestLab and Horsin' Around icons are generated
-by `scripts\make_icons.py` (Pillow). The shortcut script regenerates any
-missing icon automatically.
