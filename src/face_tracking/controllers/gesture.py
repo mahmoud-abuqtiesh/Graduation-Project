@@ -1,6 +1,7 @@
 from typing import Dict, Optional, Tuple
 
 from src.face_tracking.controllers.blendshape_gesture_constants import (
+    CLICK_HOLD_TRIGGER_SEC,
     CLICK_HOLD_UNFREEZE_SEC,
     PUCKER_MAX,
     PUCKER_RELEASE,
@@ -29,6 +30,7 @@ class GestureController:
         smirk_baseline_left: float = 0.0,
         smirk_baseline_right: float = 0.0,
         click_hold_unfreeze_sec: float = CLICK_HOLD_UNFREEZE_SEC,
+        click_hold_trigger_sec: float = CLICK_HOLD_TRIGGER_SEC,
         pucker_release: float = PUCKER_RELEASE,
         pucker_trigger_low: float = PUCKER_TRIGGER_LOW,
         pucker_trigger_high: float = PUCKER_TRIGGER_HIGH,
@@ -49,6 +51,8 @@ class GestureController:
             raise ValueError("smirk baselines must be >= 0")
         if click_hold_unfreeze_sec < 0.0:
             raise ValueError("click_hold_unfreeze_sec must be >= 0")
+        if click_hold_trigger_sec < 0.0:
+            raise ValueError("click_hold_trigger_sec must be >= 0")
         if not (0.0 <= pucker_release < pucker_trigger_low < pucker_trigger_high <= pucker_max):
             raise ValueError(
                 "pucker thresholds must satisfy: "
@@ -79,6 +83,7 @@ class GestureController:
         self.smirk_baseline_left = float(smirk_baseline_left)
         self.smirk_baseline_right = float(smirk_baseline_right)
         self.click_hold_unfreeze_sec = float(click_hold_unfreeze_sec)
+        self.click_hold_trigger_sec = float(click_hold_trigger_sec)
         self.pucker_release = float(pucker_release)
         self.pucker_trigger_low = float(pucker_trigger_low)
         self.pucker_trigger_high = float(pucker_trigger_high)
@@ -99,6 +104,8 @@ class GestureController:
         self._held_started_at: float = 0.0
         self._last_click_side: Optional[str] = None
         self._last_click_consumed: bool = False
+        self._pucker_hold_intent_started_at: Optional[float] = None
+        self._tuck_hold_intent_started_at: Optional[float] = None
 
         self._smirk_scroll_intent_started_at: Optional[float] = None
         self._scroll_last_tick_at: float = 0.0
@@ -154,6 +161,8 @@ class GestureController:
         if self._held_button is None and not self._click_armed:
             if not pucker_active and not tuck_active:
                 self._click_armed = True
+                self._pucker_hold_intent_started_at = None
+                self._tuck_hold_intent_started_at = None
             return
 
         if self._held_button is not None:
@@ -175,12 +184,33 @@ class GestureController:
                     self._press_held_button("left", now)
             return
 
-        if pucker_trigger:
-            self._press_held_button("left", now)
+        if pucker_trigger and self._click_armed and self._pucker_hold_intent_started_at is None:
+            self.cursor.left_click()
+            self._pucker_hold_intent_started_at = now
             self._click_armed = False
-        elif tuck_trigger:
-            self._press_held_button("right", now)
+
+        if self._pucker_hold_intent_started_at is not None:
+            if not pucker_trigger:
+                self._pucker_hold_intent_started_at = None
+            elif (now - self._pucker_hold_intent_started_at) >= self.click_hold_trigger_sec:
+                self._press_held_button("left", now)
+                self._pucker_hold_intent_started_at = None
+            if self._pucker_hold_intent_started_at is not None:
+                return
+
+        if tuck_trigger and self._click_armed and self._tuck_hold_intent_started_at is None:
+            self.cursor.right_click()
+            self._tuck_hold_intent_started_at = now
             self._click_armed = False
+
+        if self._tuck_hold_intent_started_at is not None:
+            if not tuck_trigger:
+                self._tuck_hold_intent_started_at = None
+            elif (now - self._tuck_hold_intent_started_at) >= self.click_hold_trigger_sec:
+                self._press_held_button("right", now)
+                self._tuck_hold_intent_started_at = None
+            if self._tuck_hold_intent_started_at is not None:
+                return
 
     def _emit_scroll_tick(self, direction: str, speed: float, now: float) -> None:
         if (now - self._scroll_last_tick_at) < self.scroll_min_tick_interval_sec:
@@ -250,6 +280,8 @@ class GestureController:
         self._click_armed = True
         self._last_click_side = None
         self._last_click_consumed = False
+        self._pucker_hold_intent_started_at = None
+        self._tuck_hold_intent_started_at = None
         self._smirk_scroll_intent_started_at = None
         self._scroll_last_tick_at = 0.0
         self._scroll_accumulator = 0.0
