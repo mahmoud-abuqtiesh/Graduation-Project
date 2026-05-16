@@ -1,0 +1,9 @@
+{
+  "map_id": "meadow",
+  "species_ids": [
+    "meadow_chestnut",
+    "meadow_dapple",
+    "meadow_sunset",
+    "meadow_bay"
+  ]
+}

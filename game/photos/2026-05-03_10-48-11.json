@@ -1,0 +1,9 @@
+{
+  "map_id": "highlands",
+  "species_ids": [
+    "highland_pony",
+    "highland_cloud",
+    "highland_ember",
+    "highland_roan"
+  ]
+}

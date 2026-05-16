@@ -1,0 +1,23 @@
+torch
+torchvision
+dlib
+numpy>=1.24
+opencv-python>=4.8
+certifi>=2024.0.0
+mediapipe>=0.10
+PySide6>=6.6
+platformdirs>=4.0
+
+# Pure-Python SSH/SCP client used to talk to the Raspberry Pi camera host.
+# Pure-Python so Windows users don't need sshpass / PuTTY / OpenSSH key setup.
+paramiko>=3.4
+
+# macOS-only
+pyobjc-core==11.1; sys_platform == "darwin"
+pyobjc-framework-Cocoa==11.1; sys_platform == "darwin"
+pyobjc-framework-Quartz==11.1; sys_platform == "darwin"
+
+# Linux-only
+pynput; sys_platform == "linux"
+keyboard; sys_platform == "linux"
+panda3d>=1.10.14

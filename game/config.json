@@ -1,0 +1,7 @@
+{
+  "photo_trigger": "left_click",
+  "countdown_duration": 1.5,
+  "cart_speed": "slow",
+  "sfx_volume": 0.75,
+  "music_volume": 0.5
+}

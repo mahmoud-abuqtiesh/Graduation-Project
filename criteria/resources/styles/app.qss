@@ -1,0 +1,86 @@
+QMainWindow, QWidget {{
+    background: {background};
+    color: {text};
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+}}
+
+QListWidget#Sidebar {{
+    background: {sidebar};
+    border: none;
+    color: {sidebar_text};
+    font-size: 14px;
+    padding-top: 12px;
+}}
+
+QListWidget#Sidebar::item {{
+    padding: 14px 20px;
+    border: none;
+}}
+
+QListWidget#Sidebar::item:selected {{
+    background: {sidebar_selected};
+    color: white;
+}}
+
+QListWidget#Sidebar::item:hover {{
+    background: {sidebar_hover};
+}}
+
+QFrame[card="true"] {{
+    background: {card};
+    border: 1px solid {card_border};
+    border-radius: 12px;
+}}
+
+QPushButton {{
+    background: {primary};
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    min-height: 34px;
+    padding: 8px 16px;
+}}
+
+QPushButton:hover {{
+    background: {primary_hover};
+}}
+
+QPushButton:pressed {{
+    background: {primary_pressed};
+}}
+
+QPushButton[secondary="true"] {{
+    background: {secondary};
+}}
+
+QPushButton[danger="true"] {{
+    background: {danger};
+}}
+
+QLineEdit, QComboBox, QSpinBox, QTextEdit {{
+    background: {input_bg};
+    border: 1px solid {input_border};
+    border-radius: 6px;
+    color: {text};
+    min-height: 30px;
+    padding: 6px 8px;
+}}
+
+QLabel#Title {{
+    color: {text};
+    font-size: 26px;
+    font-weight: 700;
+}}
+
+QLabel#Subtitle {{
+    color: {text_muted};
+    font-size: 14px;
+}}
+
+QLabel#Score {{
+    color: {score_color};
+    font-size: 38px;
+    font-weight: 700;
+}}
